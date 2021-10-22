@@ -1,4 +1,5 @@
-from .models import fees,studentsdetail,teachpaymonths,teacherdetail
+from .models import fees,studentsdetail,teachpaymonths,teacherdetail,marks
+from .serializers import studentsresultSerializer
 from rest_framework.generics import ListAPIView
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
@@ -61,3 +62,17 @@ def countfunction(request):
         teachercount = teacherdetail.objects.all().count()
         sumserial = {'studentcount': studentscount, 'teachercount': teachercount,}
         return JsonResponse(sumserial)
+
+@api_view(['GET'])
+def calcsubject(request,subjectt,roll):
+    if request.method == 'GET':
+        studentmarks = marks.objects.filter(enrollstudent__student__rollnbr=roll,subjectname__subjectname=subjectt)
+        subjectmarks_serialized = studentsresultSerializer(studentmarks,many=True)
+        return JsonResponse(subjectmarks_serialized.data,safe=False)
+
+@api_view(['GET'])
+def nofsubjects(request,subjectt,roll):
+    if request.method == 'GET':
+        nosubjects = marks.objects.filter(enrollstudent__student__rollnbr=roll,subjectname__subjectname=subjectt).count()
+        return JsonResponse({'nosubjects': nosubjects})
+

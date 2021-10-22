@@ -34,6 +34,9 @@ urlpatterns = [
     path('studentsearch/',views.studentsearch.as_view()),
     # path('searchfees/',views.sear.as_view()),
     # path('searchresult/',views.searchresult.as_view()),
+
+    path('calcsubject/<int:roll>/<str:subjectt>', calculate.calcsubject),
+    path('nofsubjects/<int:roll>/<str:subjectt>', calculate.nofsubjects),
     
 
     path('allteachers', teacher.teacheroverall),

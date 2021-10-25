@@ -13,11 +13,6 @@ from rest_framework.filters import SearchFilter
 def teacheroverall(request):
     if request.method == 'GET':
         allstudents = teacherdetail.objects.all()
-        
-        # title = request.query_params.get('s_name', None)
-        # if title is not None:
-        #     allstudents = allstudents.filter(title__icontains=title)
-        
         allstudents_serializer = teacherdetailSerializer(allstudents, many=True)
         return JsonResponse(allstudents_serializer.data,safe = False)
     elif request.method == 'POST':

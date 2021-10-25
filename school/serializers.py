@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import studentsdetail,teacherdetail,teachpaymonths,marks,subjects,schoolclasses,enroll_student,fees
+from .models import studentsdetail,teacherdetail,teachpaymonths,marks,subjects,schoolclasses,enroll_student,fees,books
 
 class studentsdetailSerializer(serializers.ModelSerializer):
 
@@ -86,3 +86,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
 
         return user
+
+class BooksSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = books
+        fields = '__all__'

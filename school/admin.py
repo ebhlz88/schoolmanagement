@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from school.models import studentsdetail,teacherdetail,teachpaymonths,subjects,marks,schoolclasses,enroll_student,fees
+from school.models import studentsdetail,teacherdetail,teachpaymonths,subjects,marks,schoolclasses,enroll_student,fees,books
 
 # Register your models here.
 admin.site.register(studentsdetail)
@@ -11,3 +11,4 @@ admin.site.register(subjects)
 admin.site.register(marks)
 admin.site.register(enroll_student)
 admin.site.register(fees)
+admin.site.register(books)

@@ -3,8 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework import status
-from .models import studentsdetail,fees,enroll_student,schoolclasses,marks,subjects
-from .serializers import studentsdetailSerializer,feesSerializer,studentsresultSerializer,standardSerializer,subjectsSerializer
+from .models import studentsdetail,fees,enroll_student,schoolclasses,marks,subjects,books
+from .serializers import studentsdetailSerializer,feesSerializer,studentsresultSerializer,standardSerializer,subjectsSerializer,BooksSerializer
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -14,7 +14,7 @@ from rest_framework import generics
 # from rest_framework.filters import SearchFilter
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import parser_classes
-from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
+from rest_framework.parsers import JSONParser,FormParser,MultiPartParser,FileUploadParser
 
 
 
@@ -65,22 +65,6 @@ def standardlist(request):
         standard = schoolclasses.objects.all()
         years_serializer = standardSerializer(standard, many=True)
         return JsonResponse(years_serializer.data, safe=False)
-        # 'safe=False' for objects serialization
- 
-    # elif request.method == 'POST':
-    #     year_data = JSONParser().parse(request)
-    #     years_serializer = yearsSerializer(data=year_data)
-    #     if years_serializer.is_valid():
-    #         years_serializer.save()
-    #         return JsonResponse(years_serializer.data, status=status.HTTP_201_CREATED)
-    #     else:
-    #         return JsonResponse(years_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    
-    # elif request.method == 'DELETE':      
-    #             yearclass.objects.all().delete()  
-            
-    # return JsonResponse({'message':'all years cleared'},status=status.HTTP_204_NO_CONTENT)
     
 
 @api_view(['GET'])
@@ -112,7 +96,7 @@ def feespost(request,roll,standardd):
         insstandard = schoolclasses.objects.get(standardname=standardd)
         #try:
         try:
-            insenroll = enroll_student.objects.get(student__s_name=roll,standard__standardname=standardd)
+            insenroll = enroll_student.objects.get(student__rollnbr=roll,standard__standardname=standardd)
         except enroll_student.DoesNotExist:
             insenroll = enroll_student(student=inststudent,standard=insstandard)
             insenroll.save()
@@ -161,8 +145,6 @@ def postresult(request,roll,ssubject,standardd):
                 return JsonResponse(studentresultSerializer.data,status=status.HTTP_201_CREATED)
             else:
                 return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
-
-            return JsonResponse({'message':'Result already exists do you want to overide'},status=status.HTTP_400_BAD_REQUEST)
         except marks.DoesNotExist:
             insmarks = marks(enrollstudent=insenroll,subjectname=inssubject)
             insmarks.save()
@@ -184,6 +166,21 @@ class searchresult(ListAPIView):
         serializer_class=studentsresultSerializer
         filter_backends=[SearchFilter]
         search_fields=['subjectname__subjectname','enrollstudent__student__s_name','enrollstudent__student__rollnbr']
-            
+
+class allbooks(APIView):
+    def get(self,request,format=None):
+        allbooks = books.objects.all()
+        bookSerialized = BooksSerializer(allbooks, many=True)
+        return JsonResponse(bookSerialized.data, safe=False)
+
+    parser_classes = [FormParser,MultiPartParser]
+    def post(self, request, format=None):
+        bookSerialized = BooksSerializer(data= request.data)
+        if bookSerialized.is_valid():
+            bookSerialized.save()
+            return Response(bookSerialized.data, status=status.HTTP_201_CREATED)
+        return Response(bookSerialized.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 

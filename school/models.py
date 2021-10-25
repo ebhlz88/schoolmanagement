@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.fields.related import ForeignKey
 
 # Create your models here.
 class studentsdetail(models.Model):
@@ -71,6 +72,13 @@ class teachpaymonths(models.Model):
     teacher = models.ForeignKey(teacherdetail,on_delete=models.CASCADE)
     teacheramount = models.IntegerField(default=0,null=True)
     date_payed = models.DateField(auto_now_add=True)
+
+class books(models.Model):
+    bookname = models.CharField(max_length=40)
+    book = models.FileField(upload_to='books')
+    standard = models.ForeignKey(schoolclasses,on_delete=models.CASCADE)
+    def __str__(self):
+        return str(self.bookname)
 
 
 

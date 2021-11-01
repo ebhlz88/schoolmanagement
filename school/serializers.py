@@ -92,3 +92,7 @@ class BooksSerializer(serializers.ModelSerializer):
     class Meta:
         model = books
         fields = '__all__'
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['standard'] = standardSerializer(instance.standard).data
+        return rep

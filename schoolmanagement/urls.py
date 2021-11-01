@@ -32,7 +32,7 @@ urlpatterns = [
     path('standardlist', views.standardlist),
     path('subjectlist', views.subjectlist),
     path('studentsearch/',views.studentsearch.as_view()),
-    path('books',views.allbooks.as_view()),
+    path('books/<str:stsandardd>',views.allbooks.as_view()),
 
     path('calcsubject/<int:roll>/<str:subjectt>', calculate.calcsubject),
     path('nofsubjects/<int:roll>/<str:subjectt>', calculate.nofsubjects),

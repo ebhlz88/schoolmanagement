@@ -74,7 +74,8 @@ class teachpaymonths(models.Model):
     date_payed = models.DateField(auto_now_add=True)
 
 class books(models.Model):
-    bookname = models.CharField(max_length=40)
+    bookthumbnail = models.ImageField(upload_to='books',blank=True)
+    bookname =  models.CharField(max_length=200)
     book = models.FileField(upload_to='books')
     standard = models.ForeignKey(schoolclasses,on_delete=models.CASCADE)
     def __str__(self):

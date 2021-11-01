@@ -1,3 +1,5 @@
 /studentpic/*
-.jpeg
-.pdf
+*.jpeg
+*.pdf
+*.jpg
+*.png

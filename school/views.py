@@ -168,10 +168,10 @@ class searchresult(ListAPIView):
         search_fields=['subjectname__subjectname','enrollstudent__student__s_name','enrollstudent__student__rollnbr']
 
 class allbooks(APIView):
-    def get(self,request,format=None):
-        allbooks = books.objects.all()
+    def get(self,*args, **kwargs):
+        allbooks = books.objects.filter(standard__standardname=kwargs.get('stsandardd', 'ninth'))
         bookSerialized = BooksSerializer(allbooks, many=True)
-        return JsonResponse(bookSerialized.data, safe=False)
+        return Response(bookSerialized.data)
 
     parser_classes = [FormParser,MultiPartParser]
     def post(self, request, format=None):

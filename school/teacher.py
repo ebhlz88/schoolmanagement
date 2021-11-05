@@ -22,7 +22,7 @@ def teacheroverall(request):
             postserializer.save()
             return JsonResponse(postserializer.data,status=status.HTTP_201_CREATED)
         else:
-            return JsonResponse({'message': 'invalid entry'},status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(postserializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':      
                 teacherdetail.objects.all().delete()  

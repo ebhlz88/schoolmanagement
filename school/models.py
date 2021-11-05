@@ -63,7 +63,7 @@ class teacherdetail(models.Model):
     address = models.CharField(max_length=200)
     salary = models.IntegerField()
     speciality = models.CharField(max_length=200)
-    bloodgroup = models.CharField(max_length=4)
+    bloodgroup = models.CharField(max_length=4,null=True)
 
     def __str__(self):
         return str(self.t_name)

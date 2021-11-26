@@ -8,26 +8,28 @@ from django.http.response import JsonResponse
 from rest_framework.generics import ListAPIView
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
+from rest_framework.views import APIView
+from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
+from rest_framework.response import Response
 
-@api_view(['GET','POST','DELETE'])
-def teacheroverall(request):
-    if request.method == 'GET':
+class teacheroverall(APIView):
+    def get(self,request,format=None):
         allstudents = teacherdetail.objects.all()
         allstudents_serializer = teacherdetailSerializer(allstudents, many=True)
-        return JsonResponse(allstudents_serializer.data,safe = False)
-    elif request.method == 'POST':
-        teacherpostdata = JSONParser().parse(request)
-        postserializer = teacherdetailSerializer(data=teacherpostdata)
+        return Response(allstudents_serializer.data)
+    parser_classes = [FormParser,MultiPartParser]
+    def post(self, request, format=None):
+        postserializer = teacherdetailSerializer(data=request.data)
         if postserializer.is_valid():
             postserializer.save()
-            return JsonResponse(postserializer.data,status=status.HTTP_201_CREATED)
+            return Response(postserializer.data,status=status.HTTP_201_CREATED)
         else:
-            return JsonResponse(postserializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(postserializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':      
-                teacherdetail.objects.all().delete()  
+    # elif request.method == 'DELETE':      
+    #             teacherdetail.objects.all().delete()  
             
-    return JsonResponse({'message':'all students data deleted'},status=status.HTTP_204_NO_CONTENT)
+    # return JsonResponse({'message':'all students data deleted'},status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
 def teacherbyroll(request,idd):

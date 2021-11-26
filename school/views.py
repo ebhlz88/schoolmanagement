@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from .models import studentsdetail,fees,enroll_student,schoolclasses,marks,subjects,books
-from .serializers import studentsdetailSerializer,feesSerializer,studentsresultSerializer,standardSerializer,subjectsSerializer,BooksSerializer
+from .serializers import studentsdetailSerializer,feesSerializer,studentsresultSerializer,standardSerializer,subjectsSerializer,BooksSerializer,ResultlistSerializer
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -14,7 +14,7 @@ from rest_framework import generics
 # from rest_framework.filters import SearchFilter
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import parser_classes
-from rest_framework.parsers import JSONParser,FormParser,MultiPartParser,FileUploadParser
+from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
 
 
 
@@ -133,12 +133,6 @@ def postresult(request,roll,ssubject,standardd):
                 insenroll.save()
 
             markstest = marks.objects.get(enrollstudent__student__rollnbr=roll,subjectname__subjectname=ssubject,enrollstudent__standard__standardname=standardd)
-            
-            #get subject object
-            # inssubject = subjects.objects.get(subjectname=ssubject)
-            # insmarks = marks(enrollstudent=insenroll,subjectname=inssubject)
-
-            
             studentresultSerializer = studentsresultSerializer(markstest,data=result_data,partial=True)
             if studentresultSerializer.is_valid():
                 studentresultSerializer.save()
@@ -180,7 +174,30 @@ class allbooks(APIView):
             bookSerialized.save()
             return Response(bookSerialized.data, status=status.HTTP_201_CREATED)
         return Response(bookSerialized.errors, status=status.HTTP_400_BAD_REQUEST)
+from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView
+class mpostres(ListBulkCreateUpdateDestroyAPIView):
+    queryset = marks.objects.all()
+    serializer_class = ResultlistSerializer
 
+    # def create(self, request, *args, **kwargs):
+    #     """
+    #     #checks if post request data is an array initializes serializer with many=True
+    #     else executes default CreateModelMixin.create function 
+    #     """
+    #     is_many = isinstance(request.data, list)
+    #     if not is_many:
+    #         return super(studentslist, self).create(request, *args, **kwargs)
+    #     else:
+    #         serializer = self.get_serializer(data=request.data, many=True)
+    #         serializer.is_valid(raise_exception=True)
+    #         self.perform_create(serializer)
+    #         headers = self.get_success_headers(serializer.data)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-
-
+@api_view(['GET'])
+def getresultBystandard(request,standardd,ssubject):
+    if request.method == 'GET':
+        student = marks.objects.filter(enrollstudent__standard__standardname=standardd,subjectname__subjectname=ssubject)
+        # print(student.standard)
+        studentresultSerializer = studentsresultSerializer(student,many = True)
+        return JsonResponse(studentresultSerializer.data,safe= False)

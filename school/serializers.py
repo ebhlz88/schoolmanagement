@@ -96,3 +96,21 @@ class BooksSerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         rep['standard'] = standardSerializer(instance.standard).data
         return rep
+
+# class ResultlistSerializer(serializers.ListSerializer):
+
+#     child= studentsresultSerializer()
+#     def create(self, validated_data):
+#         return [
+#             self.child.create(attrs) for attrs in validated_data
+#         ]
+
+from rest_framework_bulk import BulkListSerializer, BulkSerializerMixin,ListBulkCreateUpdateDestroyAPIView
+class ResultlistSerializer(BulkSerializerMixin, serializers.ModelSerializer):
+    class Meta(object):
+        model = marks
+        # only necessary in DRF3
+        list_serializer_class = BulkListSerializer
+        fields = '__all__' 
+
+

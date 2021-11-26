@@ -33,12 +33,15 @@ urlpatterns = [
     path('subjectlist', views.subjectlist),
     path('studentsearch/',views.studentsearch.as_view()),
     path('books/<str:stsandardd>',views.allbooks.as_view()),
+    path('rbystandard/<str:standardd>/<str:ssubject>',views.getresultBystandard),
+
+    path('mps/<str:standardd>',views.mpostres.as_view()),
 
     path('calcsubject/<int:roll>/<str:subjectt>', calculate.calcsubject),
     path('nofsubjects/<int:roll>/<str:subjectt>', calculate.nofsubjects),
     
 
-    path('allteachers', teacher.teacheroverall),
+    path('allteachers', teacher.teacheroverall.as_view()),
     path('teacherbyroll/<int:idd>', teacher.teacherbyroll),
     path('teacherpayment/<int:pk>', teacher.teacherpaymentview),
     path('tpaymentpost/<int:pk>', teacher.updateteacherpayments),

@@ -34,8 +34,10 @@ urlpatterns = [
     path('studentsearch/',views.studentsearch.as_view()),
     path('books/<str:stsandardd>',views.allbooks.as_view()),
     path('rbystandard/<str:standardd>/<str:ssubject>',views.getresultBystandard),
+    path('enrollments/<int:roll>',views.getenrollments),
 
-    path('mps/<str:standardd>',views.mpostres.as_view()),
+    path('resbystandard/<int:roll>',views.getstudentresultbystandard),
+
 
     path('calcsubject/<int:roll>/<str:subjectt>', calculate.calcsubject),
     path('nofsubjects/<int:roll>/<str:subjectt>', calculate.nofsubjects),

@@ -1,10 +1,11 @@
+import json
 from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework import status
 from .models import studentsdetail,fees,enroll_student,schoolclasses,marks,subjects,books
-from .serializers import studentsdetailSerializer,feesSerializer,studentsresultSerializer,standardSerializer,subjectsSerializer,BooksSerializer,ResultlistSerializer
+from .serializers import studentsdetailSerializer,feesSerializer,studentsresultSerializer,standardSerializer,subjectsSerializer,BooksSerializer,ResultlistSerializer,enrollSerializer
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -174,25 +175,7 @@ class allbooks(APIView):
             bookSerialized.save()
             return Response(bookSerialized.data, status=status.HTTP_201_CREATED)
         return Response(bookSerialized.errors, status=status.HTTP_400_BAD_REQUEST)
-from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView
-class mpostres(ListBulkCreateUpdateDestroyAPIView):
-    queryset = marks.objects.all()
-    serializer_class = ResultlistSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     """
-    #     #checks if post request data is an array initializes serializer with many=True
-    #     else executes default CreateModelMixin.create function 
-    #     """
-    #     is_many = isinstance(request.data, list)
-    #     if not is_many:
-    #         return super(studentslist, self).create(request, *args, **kwargs)
-    #     else:
-    #         serializer = self.get_serializer(data=request.data, many=True)
-    #         serializer.is_valid(raise_exception=True)
-    #         self.perform_create(serializer)
-    #         headers = self.get_success_headers(serializer.data)
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 @api_view(['GET'])
 def getresultBystandard(request,standardd,ssubject):
@@ -200,4 +183,29 @@ def getresultBystandard(request,standardd,ssubject):
         student = marks.objects.filter(enrollstudent__standard__standardname=standardd,subjectname__subjectname=ssubject)
         # print(student.standard)
         studentresultSerializer = studentsresultSerializer(student,many = True)
+        return JsonResponse(studentresultSerializer.data,safe= False)
+
+
+@api_view(['GET'])
+def getenrollments(request,roll):
+    if request.method == 'GET':
+        enrollments = enroll_student.objects.filter(student__rollnbr=21).order_by('-date_enrollinstandard')
+        enrollments_Serialized = enrollSerializer(enrollments, many= True)
+        return JsonResponse(enrollments_Serialized.data,safe=False)
+
+
+
+from django.db.models import Sum
+@api_view(['GET'])
+def getstudentresultbystandard(request,roll):
+    if request.method == 'GET':
+        markdata = marks.objects.filter(enrollstudent__standard__standardname='ninth')
+        #marksdata = marks.objects.filter(enrollstudent__student__rollnbr=roll)
+        
+        studentresultSerializer = studentsresultSerializer(markdata,many = True)
+        #alldata = marksum +studentresultSerializer.data
+    
+        #print(alldata)
+        # dic2 = studentresultSerializer.data|marksum
+        # print(dic2)
         return JsonResponse(studentresultSerializer.data,safe= False)

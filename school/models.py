@@ -1,6 +1,13 @@
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 
+
+class schoolclasses(models.Model):
+    standardname = models.CharField(max_length=100)
+    date_started = models.DateField(default=0,null=True)
+    date_ended = models.DateField(default=0,null=True)
+    def __str__(self):
+        return self.standardname
 # Create your models here.
 class studentsdetail(models.Model):
     rollnbr = models.BigAutoField(primary_key=True)
@@ -14,23 +21,19 @@ class studentsdetail(models.Model):
     address = models.CharField(max_length=200)
     fm_number = models.CharField(max_length=15)
     bloodgroup = models.CharField(max_length=4)
+    currentStandard = models.ForeignKey(schoolclasses,on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.s_name
 
 
 
-class schoolclasses(models.Model):
-    standardname = models.CharField(max_length=100)
-    date_started = models.DateField(default=0,null=True)
-    date_ended = models.DateField(default=0,null=True)
-    def __str__(self):
-        return self.standardname
+
 
 class enroll_student(models.Model):
     standard = models.ForeignKey(schoolclasses,on_delete=models.CASCADE)
     student = models.ForeignKey(studentsdetail,on_delete=models.CASCADE)
-    
+    date_enrollinstandard = models.DateField(auto_now_add=True)
     
 
 class fees(models.Model):

@@ -8,6 +8,10 @@ class studentsdetailSerializer(serializers.ModelSerializer):
         model = studentsdetail
         #fields=['s_name',]
         fields = '__all__'
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['currentStandard'] = standardSerializer(instance.currentStandard).data
+        return rep
 
 
 class enrollSerializer(serializers.ModelSerializer):

@@ -3,9 +3,8 @@ from django.db.models.fields.related import ForeignKey
 
 
 class schoolclasses(models.Model):
+    classid = models.IntegerField(primary_key=True)
     standardname = models.CharField(max_length=100)
-    date_started = models.DateField(default=0,null=True)
-    date_ended = models.DateField(default=0,null=True)
     def __str__(self):
         return self.standardname
 # Create your models here.
@@ -51,6 +50,7 @@ class marks(models.Model):
     subjectname = models.ForeignKey(subjects,on_delete=models.DO_NOTHING)
     enrollstudent = models.ForeignKey(enroll_student,on_delete=models.CASCADE)
     subjectmarks = models.PositiveSmallIntegerField(default=0,null=True)
+    fail = models.BooleanField(default=False)
     
     
 class teacherdetail(models.Model):

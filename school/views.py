@@ -1,3 +1,4 @@
+from functools import partial
 import json
 from django.shortcuts import render
 
@@ -193,19 +194,26 @@ def getenrollments(request,roll):
         enrollments_Serialized = enrollSerializer(enrollments, many= True)
         return JsonResponse(enrollments_Serialized.data,safe=False)
 
-
-
-from django.db.models import Sum
 @api_view(['GET'])
-def getstudentresultbystandard(request,roll):
+def getstudentresultbystandard(request,standardd):
     if request.method == 'GET':
-        markdata = marks.objects.filter(enrollstudent__standard__standardname='ninth')
-        #marksdata = marks.objects.filter(enrollstudent__student__rollnbr=roll)
+        markdata = marks.objects.filter(enrollstudent__standard__standardname=standardd)
         
         studentresultSerializer = studentsresultSerializer(markdata,many = True)
-        #alldata = marksum +studentresultSerializer.data
-    
-        #print(alldata)
-        # dic2 = studentresultSerializer.data|marksum
-        # print(dic2)
         return JsonResponse(studentresultSerializer.data,safe= False)
+from django.core import serializers
+@api_view(['GET'])
+def updateStandardInStudent(request,roll):
+    if request.method == 'GET':
+        getstudent = studentsdetail.objects.filter(rollnbr=roll).values("currentStandard")
+        queryset = studentsdetail.objects.get(rollnbr=roll)
+        #studentserialized = studentsdetailSerializer(getstudent)
+        for dd in getstudent:
+            currentStan = { "currentStandard": dd['currentStandard']+1 }
+        print(currentStan)
+        serialized = studentsdetailSerializer(queryset,data=currentStan,partial=True)
+        if serialized.is_valid():
+            serialized.save()
+            return JsonResponse(serialized.data,status=status.HTTP_201_CREATED)
+        else:
+            return JsonResponse(serialized.errors, status=status.HTTP_400_BAD_REQUEST)

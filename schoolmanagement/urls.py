@@ -36,8 +36,8 @@ urlpatterns = [
     path('rbystandard/<str:standardd>/<str:ssubject>',views.getresultBystandard),
     path('enrollments/<int:roll>',views.getenrollments),
 
-    path('resbystandard/<int:roll>',views.getstudentresultbystandard),
-
+    path('resbystandard/<str:standardd>',views.getstudentresultbystandard),
+    path('studentstandard/<int:roll>',views.updateStandardInStudent),
 
     path('calcsubject/<int:roll>/<str:subjectt>', calculate.calcsubject),
     path('nofsubjects/<int:roll>/<str:subjectt>', calculate.nofsubjects),

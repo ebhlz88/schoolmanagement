@@ -125,16 +125,16 @@ def postresult(request,roll,ssubject,standardd):
         result_data = JSONParser().parse(request)
         inssubject = subjects.objects.get(subjectname=ssubject)
         inststudent = studentsdetail.objects.get(rollnbr=roll)
-        insstandard = schoolclasses.objects.get(standardname=standardd)
+        insstandard = schoolclasses.objects.get(classid=standardd)
         try:
             #check if student is enrolled if not it is automatically enrolled
             try:
-                insenroll = enroll_student.objects.get(student=roll,standard__standardname=standardd)
+                insenroll = enroll_student.objects.get(student=roll,standard__classid=standardd)
             except enroll_student.DoesNotExist:
                 insenroll = enroll_student(student=inststudent,standard=insstandard)
                 insenroll.save()
 
-            markstest = marks.objects.get(enrollstudent__student__rollnbr=roll,subjectname__subjectname=ssubject,enrollstudent__standard__standardname=standardd)
+            markstest = marks.objects.get(enrollstudent__student__rollnbr=roll,subjectname__subjectname=ssubject,enrollstudent__standard__classid=standardd)
             studentresultSerializer = studentsresultSerializer(markstest,data=result_data,partial=True)
             if studentresultSerializer.is_valid():
                 studentresultSerializer.save()
@@ -181,7 +181,7 @@ class allbooks(APIView):
 @api_view(['GET'])
 def getresultBystandard(request,standardd,ssubject):
     if request.method == 'GET':
-        student = marks.objects.filter(enrollstudent__standard__standardname=standardd,subjectname__subjectname=ssubject)
+        student = marks.objects.filter(enrollstudent__standard__pk=standardd,subjectname__subjectname=ssubject)
         # print(student.standard)
         studentresultSerializer = studentsresultSerializer(student,many = True)
         return JsonResponse(studentresultSerializer.data,safe= False)
@@ -197,7 +197,7 @@ def getenrollments(request,roll):
 @api_view(['GET'])
 def getstudentresultbystandard(request,standardd):
     if request.method == 'GET':
-        markdata = marks.objects.filter(enrollstudent__standard__standardname=standardd)
+        markdata = marks.objects.filter(enrollstudent__standard__classid=standardd)
         
         studentresultSerializer = studentsresultSerializer(markdata,many = True)
         return JsonResponse(studentresultSerializer.data,safe= False)

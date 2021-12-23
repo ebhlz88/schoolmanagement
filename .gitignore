@@ -1,5 +1,7 @@
 /studentpic/*
+/books/*
 *.jpeg
 *.pdf
 *.jpg
 *.png
+/__pycache__/*

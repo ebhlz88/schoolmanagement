@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-a49t3k*fcw=c8+l-l4*8c#zq+2_-834dt_ppgn^+spd3$^u!g@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 TWILIO_ACCOUNT_SID = 'AC8d34fbc39f1410f303e0efd06137bef3'

@@ -28,15 +28,15 @@ urlpatterns = [
     path('feesByroll/<int:roll>', views.feesgetByroll),
     path('feespost/<int:roll>/<str:standardd>',views.feespost),
     path('result/<int:sroll>/<str:standardd>', views.getstudentresult),
-    path('resultpost/<int:roll>/<str:standardd>/<str:ssubject>',views.postresult),
+    path('resultpost/<int:roll>/<int:standardd>/<str:ssubject>',views.postresult),
     path('standardlist', views.standardlist),
     path('subjectlist', views.subjectlist),
     path('studentsearch/',views.studentsearch.as_view()),
     path('books/<str:stsandardd>',views.allbooks.as_view()),
-    path('rbystandard/<str:standardd>/<str:ssubject>',views.getresultBystandard),
+    path('rbystandard/<int:standardd>/<str:ssubject>',views.getresultBystandard),
     path('enrollments/<int:roll>',views.getenrollments),
 
-    path('resbystandard/<str:standardd>',views.getstudentresultbystandard),
+    path('resbystandard/<int:standardd>',views.getstudentresultbystandard),
     path('studentstandard/<int:roll>',views.updateStandardInStudent),
 
     path('calcsubject/<int:roll>/<str:subjectt>', calculate.calcsubject),
